@@ -7,7 +7,7 @@ from pwd import getpwuid
 
 import logging
 
-class bcolors:
+class terminalColors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
     OKGREEN = '\033[92m'
@@ -22,8 +22,8 @@ def find_owner(filename):
 	try:
 		return getpwuid(os.stat(filename).st_uid).pw_name
 	except:
-		#print 'ERROR {:>40}'.format(bcolors.FAIL + 'Fallo al obtener el propietario de ' + filename + bcolors.ENDC)
-		logging.debug('{:>40}'.format(bcolors.FAIL + 'Fallo al obtener el propietario de ' + filename + bcolors.ENDC))
+		#print 'ERROR {:>40}'.format(terminalColors.FAIL + 'Fallo al obtener el propietario de ' + filename + terminalColors.ENDC)
+		logging.debug('{:>40}'.format(terminalColors.FAIL + 'Fallo al obtener el propietario de ' + filename + terminalColors.ENDC))
 
 def list_dir(path, user, ident):
 	# Para un determinado path, vamos a analizar todos los elementos que contiene
@@ -32,14 +32,14 @@ def list_dir(path, user, ident):
 			owner = find_owner(path + '/' + member)
 			# Si es un directorio, tendremos que operar recursivamente con él...
 			if os.path.isdir(path + '/' + member):
-				print (' ' * ident) + '{:<49} {:>40}'.format((bcolors.OKBLUE + member + bcolors.ENDC), '')
+				print (' ' * ident) + '{:<49} {:>40}'.format((terminalColors.OKBLUE + member + terminalColors.ENDC), '')
 				if ( (path + member) not in ['/proc', '/sys', '/usr']):
 					if path != '/':
 						list_dir(path + '/' + member, user, ident+2);
 					else:
 						list_dir(path + member, user, ident+2);
 				else:
-					logging.info(bcolors.OKBLUE + 'No analizamos ' + path + member + bcolors.ENDC)
+					logging.info(terminalColors.OKBLUE + 'No analizamos ' + path + member + terminalColors.ENDC)
 			# Si no es un directorio, es un fichero y lo recopilaremos
 			else:
 				print (' ' * ident) + '{:<40} {:>40}'.format(member, owner)
@@ -63,7 +63,7 @@ def list_dir(path, user, ident):
 		except (KeyboardInterrupt, SystemExit):
 			raise
 		except:
-			logging.debug('{:>40}'.format(bcolors.FAIL + 'Fallo analizando ' + path + '/' + member + bcolors.ENDC))
+			logging.debug('{:>40}'.format(terminalColors.FAIL + 'Fallo analizando ' + path + '/' + member + terminalColors.ENDC))
 
 def main(argv):
 
@@ -86,15 +86,15 @@ def main(argv):
 			user = arg
 
 	logging.basicConfig(filename='list_files.log', filemode='w', format='%(asctime)s - %(levelname)s >> %(message)s', level=logging.INFO)
-	logging.info(bcolors.OKGREEN + 'Comienzo ejecución' + bcolors.ENDC)
+	logging.info(terminalColors.OKGREEN + 'Comienzo ejecución' + terminalColors.ENDC)
 
 	try:
 		list_dir(path,user, 0);
 	except (KeyboardInterrupt, SystemExit):
-		logging.warning(bcolors.WARNING + 'Ejecución interrumpida' + bcolors.ENDC)
+		logging.warning(terminalColors.WARNING + 'Ejecución interrumpida' + terminalColors.ENDC)
 		sys.exit(2)
 
-	logging.info(bcolors.OKGREEN + 'Fin de la ejecución' + bcolors.ENDC)
+	logging.info(terminalColors.OKGREEN + 'Fin de la ejecución' + terminalColors.ENDC)
 	sys.exit(0)
 
 if __name__=='__main__':
